@@ -8,10 +8,11 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "fastapi[standard] (>=0.128.0,<0.129.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "backend", from = "src"}]
+packages = [{include = "app", from = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
