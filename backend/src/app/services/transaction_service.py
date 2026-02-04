@@ -34,12 +34,13 @@ class TransactionService:
         db_transaction = self.get_transaction(transaction_id)
         if not db_transaction:
             raise HTTPException(status_code=404, detail="Transaction not found")
+
+        # Data cleaning - exclude unset values from the update dictionary
         update = data.model_dump(exclude_unset=True)
+
         for key, value in update.items():
-            if key == "type":
-                setattr(db_transaction, key, value.value if hasattr(value, "value") else value)
-            else:
-                setattr(db_transaction, key, value)
+            setattr(db_transaction, key, value)
+
         self.session.commit()
         self.session.refresh(db_transaction)
         return db_transaction
