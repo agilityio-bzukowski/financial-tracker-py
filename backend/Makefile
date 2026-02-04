@@ -1,4 +1,4 @@
-.PHONY: install run dev test lint clean
+.PHONY: install run dev test lint clean migrate migration migrate-down
 
 install:
 	poetry install
@@ -18,3 +18,13 @@ lint:
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
+
+migrate:
+	poetry run alembic upgrade head
+
+generate:
+	@read -p "Migration message: " msg; \
+	poetry run alembic revision --autogenerate -m "$$msg"
+
+migrate-down:
+	poetry run alembic downgrade -1
