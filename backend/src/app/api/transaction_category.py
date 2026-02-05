@@ -4,7 +4,7 @@ from app.services.transaction_category_service import TransactionCategoryService
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/transaction_categories", tags=["transaction_categories"])
+router = APIRouter(prefix="/transaction-categories", tags=["transaction-categories"])
 
 
 @router.get("/", response_model=list[TransactionCategoryRead])
