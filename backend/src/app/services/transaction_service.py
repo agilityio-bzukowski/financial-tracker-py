@@ -31,19 +31,19 @@ class TransactionService:
     def update_transaction(
         self, transaction_id: int, data: TransactionUpdate
     ) -> Transaction:
-        db_transaction = self.get_transaction(transaction_id)
-        if not db_transaction:
+        transaction = self.get_transaction(transaction_id)
+        if not transaction:
             raise HTTPException(status_code=404, detail="Transaction not found")
 
         # Data cleaning - exclude unset values from the update dictionary
         update = data.model_dump(exclude_unset=True)
 
         for key, value in update.items():
-            setattr(db_transaction, key, value)
+            setattr(transaction, key, value)
 
         self.session.commit()
-        self.session.refresh(db_transaction)
-        return db_transaction
+        self.session.refresh(transaction)
+        return transaction
 
     def delete_transaction(self, transaction_id: int) -> bool:
         transaction = self.get_transaction(transaction_id)
