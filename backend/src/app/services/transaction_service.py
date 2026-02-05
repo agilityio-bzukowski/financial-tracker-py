@@ -1,4 +1,4 @@
-from app.db.schema import Transaction
+from app.db.schema import Transaction, TransactionCategory
 from app.models.transaction import TransactionCreate, TransactionUpdate
 from fastapi import HTTPException
 from sqlalchemy import select
@@ -14,6 +14,9 @@ class TransactionService:
         return list(result.scalars().all())
 
     def create_transaction(self, data: TransactionCreate) -> Transaction:
+        if not self.session.get(TransactionCategory, data.category_id):
+            raise HTTPException(status_code=404, detail="Category not found")
+
         transaction = Transaction(
             amount=data.amount,
             description=data.description,
