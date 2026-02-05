@@ -1,17 +1,17 @@
 from app.db.schema import Transaction, TransactionCategory
 from app.models.transaction import TransactionCreate, TransactionUpdate
+from app.services.base import BaseService
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 
-class TransactionService:
+class TransactionService(BaseService):
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all_transactions(self) -> list[Transaction]:
-        result = self.session.execute(select(Transaction))
-        return list(result.scalars().all())
+    def get_all_transactions(self, page: int = 1, limit: int = 10):
+        return self.paginate(select(Transaction), page=page, limit=limit)
 
     def create_transaction(self, data: TransactionCreate) -> Transaction:
         if not self.session.get(TransactionCategory, data.category_id):

@@ -1,16 +1,17 @@
 from app.db.schema import TransactionCategory
 from app.models.transaction_category import TransactionCategoryCreate
+from app.models.pagination import Pagination
+from app.services.base import BaseService
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 
-class TransactionCategoryService:
+class TransactionCategoryService(BaseService):
     def __init__(self, session: Session):
         self.session = session
 
-    def get_all_transaction_categories(self) -> list[TransactionCategory]:
-        result = self.session.execute(select(TransactionCategory))
-        return list[TransactionCategory](result.scalars().all())
+    def get_all_transaction_categories(self, page: int = 1, limit: int = 10) -> Pagination:
+        return self.paginate(select(TransactionCategory), page=page, limit=limit)
 
     def get_transaction_category(
         self, transaction_category_id: int

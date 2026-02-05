@@ -1,17 +1,27 @@
 from app.db.schema import get_session
+from app.models.pagination import PaginatedResponse
 from app.models.transaction import TransactionCreate, TransactionRead, TransactionUpdate
 from app.services.transaction_service import TransactionService
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
 
 
-@router.get("/", response_model=list[TransactionRead])
-def list_transactions(session: Session = Depends(get_session)):
+@router.get("/", response_model=PaginatedResponse[TransactionRead])
+def list_transactions(
+    session: Session = Depends(get_session),
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(10, ge=1, le=100, description="Items per page"),
+):
     service = TransactionService(session)
-    transactions = service.get_all_transactions()
-    return [TransactionRead.model_validate(t) for t in transactions]
+    result = service.get_all_transactions(page=page, limit=limit)
+    return PaginatedResponse(
+        page=result.page,
+        limit=result.limit,
+        total=result.total,
+        items=[TransactionRead.model_validate(t) for t in result.items],
+    )
 
 
 @router.get("/{transaction_id}", response_model=TransactionRead)
