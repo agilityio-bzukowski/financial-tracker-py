@@ -22,3 +22,15 @@ packages = [{ include = "app", from = "src" }]
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["src/tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: Unit tests (isolated, fast)",
+    "integration: Integration tests (with database)",
+]
+addopts = "-v --tb=short"
