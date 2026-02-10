@@ -8,13 +8,15 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 from sqlalchemy.orm.session import Session
+from datetime import datetime
 
 engine = create_engine(config.db_url)
 SessionLocal = sessionmaker[Session](autocommit=False, autoflush=False, bind=engine)
 
 
 class Base(DeclarativeBase):
-    pass
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
 
 def get_session():
@@ -53,3 +55,8 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
+    email: Mapped[str]
+    hashed_password: Mapped[str]
+    is_active: Mapped[bool] = mapped_column(default=True)
+
+
