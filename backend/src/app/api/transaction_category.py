@@ -1,7 +1,7 @@
 from app.db.schema import get_session
 from app.models.pagination import PaginatedResponse
 from app.models.transaction_category import TransactionCategoryRead
-from app.services.transaction_category_service import TransactionCategoryService
+from app.services.transaction_category import TransactionCategoryService
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
